@@ -3,19 +3,19 @@
   
 
 # Introduction
-Automatic Cell type Annotation Method (\code{ACAM}) is proposed based on  marker genes'  information. This method first finds the representative clusters by searching for the  consistent subgroups across the  results  of  several popular clustering methods.  Such technique guarantees that the cells in the same cluster have very high probabilities of being from  the same cell type. Then by selecting the  features that  discriminate  one cluster from all the remaining cells,  the potential marker genes  are identified. The cell types are determined by defining a cell type importance score to match these marker genes with the validated ones.  For those cells that do not belong to any of these clusters, we use $k$-nearest neighbors to determine their cell type. 
+Automatic Cell type Annotation Method (`ACAM`) is proposed based on  marker genes'  information. This method first finds the representative clusters by searching for the  consistent subgroups across the  results  of  several popular clustering methods.  Such technique guarantees that the cells in the same cluster have very high probabilities of being from  the same cell type. Then by selecting the  features that  discriminate  one cluster from all the remaining cells,  the potential marker genes  are identified. The cell types are determined by defining a cell type importance score to match these marker genes with the validated ones.  For those cells that do not belong to any of these clusters, we use $k$-nearest neighbors to determine their cell type. 
 
 ![flowchart of ACAM](vignettes/ACAM_flowchart.png)
 
 # Installation
-You can use our method \code{ACAM} by installing this R package with the following code.
-```{r, warning = F}
+You can use our method `ACAM` by installing this R package with the following code.
+```{r, eval = F}
 devtools::install_github("yuc0824/ACAM")
 ```
 # Basic Usage
-\code{ACAM} requires the following inputs.
+`ACAM` requires the following inputs.
 
-We put Chen dataset in this package as the example.  \code{DF_chen} is the dataset Chen obtained from GEO with the accession number: GSE99701. \code{GM_chen} is the species- and tissue-specific marker genes obtained from the database CellMatch.
+We put Chen dataset in this package as the example.  `DF_chen` is the dataset Chen obtained from GEO with the accession number: GSE99701. `GM_chen` is the species- and tissue-specific marker genes obtained from the database CellMatch.
 ```{r, eval = F}
 data("DF_chen")
 data("GM_chen")
