@@ -14,13 +14,22 @@ devtools::install_github("yuc0824/ACAM")
 ```
 # Basic Usage
 `ACAM` requires the following inputs.
++ `DF` The cell-by-gene expression matrix with .
++ `gene.markers` The species- and tissue-specific marker genes obtained from CellMatch database. You can define your own markers.
 
-We put Chen dataset in this package as the example.  `DF_chen` is the dataset Chen obtained from GEO with the accession number: GSE99701. `GM_chen` is the species- and tissue-specific marker genes obtained from the database CellMatch.
+
+We put Chen dataset in this package as the example.  
+
+`DF_chen` is the dataset Chen obtained from GEO with the accession number: GSE99701. 
+
+`GM_chen` is the species- and tissue-specific marker genes obtained from the database CellMatch. 
+
+Before putting into ACAM, make sure that the dataset are log-normalized.
 ```{r, eval = F}
 data("DF_chen")
 data("GM_chen")
 ```
-First, we get the clustering results from five popular clustering methods. Four methods with max pairwise ARI variances are retained.
+First, we get the clustering results from four of the five popular clustering methods with max pairwise ARI variances.
 ```{r, eval = F}
 cluster_results <- ACAM_cluster(DF = DF_chen)
 ```
