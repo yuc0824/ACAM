@@ -1,0 +1,26 @@
+Package: ACAM
+Type: Package
+Title: This package is about the cell annotation method ACAM.
+Version: 0.1.0
+Date: 2020-09-22
+Author: Yu Chen
+Maintainer: Yu Chen <20110180051@fudan.edu.cn>
+Description: This package is about the cell annotation method ACAM.
+License: GPL-3
+encoding: UTF-8
+LazyData: true
+Imports:
+   magrittr,
+   Matrix,
+   SAMEclustering,
+   xgboost,
+   igraph,
+   kknn,
+   umap,
+   uwot,
+   SingleCellExperiment,
+   SC3,
+   cidr,
+   ADPclust,
+   SIMLR
+RoxygenNote: 7.1.2
