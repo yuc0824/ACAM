@@ -2,10 +2,10 @@
 
   
 
-
 # Introduction
 Automatic Cell type Annotation Method (\code{ACAM}) is proposed based on  marker genes'  information. This method first finds the representative clusters by searching for the  consistent subgroups across the  results  of  several popular clustering methods.  Such technique guarantees that the cells in the same cluster have very high probabilities of being from  the same cell type. Then by selecting the  features that  discriminate  one cluster from all the remaining cells,  the potential marker genes  are identified. The cell types are determined by defining a cell type importance score to match these marker genes with the validated ones.  For those cells that do not belong to any of these clusters, we use $k$-nearest neighbors to determine their cell type. 
 
+![flowchart of ACAM](vignettes/flowchart.png)
 
 # Installation
 You can use our method \code{ACAM} by installing this R package with the following code.
@@ -36,4 +36,5 @@ All the data used in the paper can be found at the repository <https://github.co
 
 # Authors
 Yu Chen, Fudan University
+
 Shuqin Zhang, Fudan University
