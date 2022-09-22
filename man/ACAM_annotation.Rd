@@ -17,7 +17,7 @@ ACAM_annotation(
 \arguments{
 \item{DF}{The input dataset. Make sure that the dataset is lognormalized. Note that the rows are cells, and the columns are marker genes.}
 
-\item{cluster_results}{The clustering results obtained from the function \it{ACAM_cluster}}
+\item{cluster_results}{The clustering results obtained from the function \code{ACAM_cluster}}
 
 \item{gene.markers}{The species- and tissue-specific marker genes obtained from CellMatch database.}
 
@@ -30,7 +30,7 @@ ACAM_annotation(
 \item{umap.rank}{The dimension of which the dataset will be reduced into by the method umap.}
 }
 \value{
-The annotation results \it{annotation_results}.
+The annotation results \code{annotation_results}.
 }
 \description{
 The function ACAM_annotation annotates cells by the method ACAM.

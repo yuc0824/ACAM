@@ -6,7 +6,7 @@
 #' @details You can use this function to calculate x+1,then return the value of x+1.
 #'
 #' @param X The input dataset.
-#' @return The clustering results \it{cluster_results}.
+#' @return The clustering results \code{cluster_results}.
 
 
 

@@ -14,7 +14,7 @@ ACAM_cluster(DF, threshold = 4000, SEED = 123)
 \item{SEED}{The random seed.}
 }
 \value{
-The clustering results \it{cluster_results}.
+The clustering results \code{cluster_results}.
 }
 \description{
 The function ACAM_cluster conducts the five clustering methods and output the four results of them which have the largest pairwise ARI.

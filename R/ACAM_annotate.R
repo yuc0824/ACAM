@@ -6,13 +6,13 @@
 #' @details The function ACAM_annotation annotates cells by the method ACAM.
 #'
 #' @param DF The input dataset. Make sure that the dataset is lognormalized. Note that the rows are cells, and the columns are marker genes.
-#' @param cluster_results The clustering results obtained from the function \it{ACAM_cluster}
+#' @param cluster_results The clustering results obtained from the function \code{ACAM_cluster}
 #' @param gene.markers The species- and tissue-specific marker genes obtained from CellMatch database.
 #' @param k.neighbors The number of neighbors considered in the final step kNN.
 #' @param min_num The mininum number which any clusters have a larger size than this number will be considered as representative clusters. Default is 10.
 #' @param pca.rank The dimension of which the dataset will be reduced into by the method PCA.
 #' @param umap.rank The dimension of which the dataset will be reduced into by the method umap.
-#' @return The annotation results \it{annotation_results}.
+#' @return The annotation results \code{annotation_results}.
 #' @export
 
 

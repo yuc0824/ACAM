@@ -10,7 +10,7 @@ Louvain(X)
 \item{X}{The input dataset.}
 }
 \value{
-The clustering results \it{cluster_results}.
+The clustering results \code{cluster_results}.
 }
 \description{
 The function Louvain assembles the result of five clustering methods used in the function \it{ACAM_cluster}.
