@@ -14,15 +14,15 @@ devtools::install_github("yuc0824/ACAM")
 ```
 # Basic Usage
 `ACAM` requires the following inputs.
-+ `DF` The cell-by-gene expression matrix with .
++ `DF` The cell-by-gene expression matrix with rows of cells and column of marker genes.
 + `gene.markers` The species- and tissue-specific marker genes obtained from CellMatch database. You can define your own markers.
 
 
 We put Chen dataset in this package as the example.  
 
-`DF_chen` is the dataset Chen obtained from GEO with the accession number: GSE99701. 
+`DF_chen`: The dataset Chen obtained from GEO with the accession number: GSE99701. 
 
-`GM_chen` is the species- and tissue-specific marker genes obtained from the database CellMatch. 
+`GM_chen`: The species- and tissue-specific marker genes obtained from the database CellMatch. 
 
 Before putting into ACAM, make sure that the dataset are log-normalized.
 ```{r, eval = F}
