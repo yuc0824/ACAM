@@ -37,7 +37,7 @@ ACAM_annotation <-function(DF,
                            knn.seed = 1
                            )
 {
-  if(prepross == TRUE){
+  if(preprocess == TRUE){
     DF <- Seurat::LogNormalize(data = DF, scale.factor = 10000, verbose = F)
     zero_expressed <- which(apply(DF,2,sum) == 0)
     if(length(zero_expressed) >= 1){
