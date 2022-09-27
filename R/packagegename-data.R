@@ -1,4 +1,5 @@
 #' @docType data
+#' @name demo
 #' @title A mini dataset
 #' @format We put a mini dataset in ACAM.
 #' @source Obtained from GEO with the accession number: GSE99701.
