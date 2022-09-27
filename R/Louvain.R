@@ -7,7 +7,7 @@
 #'
 #' @param X The input dataset.
 #' @return The clustering results \code{cluster_results}.
-
+#' @export
 
 
 Louvain <- function(X){
