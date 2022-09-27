@@ -6,12 +6,16 @@
 #' @details The function ACAM_annotation annotates cells by the method ACAM.
 #'
 #' @param DF The input dataset. Make sure that the dataset is lognormalized. Note that the rows are cells, and the columns are marker genes.
+#' @param preprocess Whether the dataset need to be preprocessed. If true, DF will be lognormalized and zero expressed genes will be removed. Default is TRUE.
 #' @param cluster_results The clustering results obtained from the function \code{ACAM_cluster}
 #' @param gene.markers The species- and tissue-specific marker genes obtained from CellMatch database.
 #' @param k.neighbors The number of neighbors considered in the final step kNN.
 #' @param min_num The mininum number which any clusters have a larger size than this number will be considered as representative clusters. Default is 10.
+#' @param pca Whether PCA should be used in the dimension reduction.
 #' @param pca.rank The dimension of which the dataset will be reduced into by the method PCA.
 #' @param umap.rank The dimension of which the dataset will be reduced into by the method umap.
+#' @param umap.seed The random seed when conducting UMAP.
+#' @param knn.seed The random seed when conducting kNN.
 #' @return The annotation results \code{annotation_results}.
 #' @export
 
@@ -20,12 +24,27 @@
 
 
 # input data
-ACAM_annotation <-function(DF, cluster_results, gene.markers,
-                           min_num = 10,
+ACAM_annotation <-function(DF,
+                           preprocess = FALSE,
+                           cluster_results,
+                           gene.markers,
                            k.neighbors = 1,
+                           min_num = 10,
+                           pca = TRUE,
                            pca.rank = 50,
-                           umap.rank = 10)
+                           umap.rank = 10,
+                           umap.seed = 1,
+                           knn.seed = 1
+                           )
 {
+  if(prepross == TRUE){
+    DF <- Seurat::LogNormalize(data = DF, scale.factor = 10000, verbose = F)
+    zero_expressed <- which(apply(DF,2,sum) == 0)
+    if(length(zero_expressed) >= 1){
+      DF <- DF[,-zero_expressed]
+    }
+  }
+
   #representative clusters
   comb_vector <- rep(0,length(unique(cluster_results)))
   for(i in 1:length((cluster_results))){
@@ -39,11 +58,6 @@ ACAM_annotation <-function(DF, cluster_results, gene.markers,
   Ycomb_in <- which(Ycomb != 0)
   Ycomb_out <- which(Ycomb == 0)
 
-
-
-DFpca <- stats::prcomp(DF, rank = pca.rank)$x
-set.seed(1)
-umap_DF <- uwot::umap(DFpca, n_components = umap.rank)
 
 # eXtreme Gradient Boosting (XGBoost)
 importance_names <- colnames(DF) %>% toupper
@@ -121,9 +135,19 @@ for(i in 1:length(Y_min_in)){
 }
 
 # kNN
+if(pca == TRUE){
+  DFpca <- stats::prcomp(DF, rank = pca.rank)$x
+  set.seed(umap.seed)
+  umap_DF <- uwot::umap(DFpca, n_components = umap.rank)
+}else{
+  set.seed(umap.seed)
+  umap_DF <- uwot::umap(DFpca, n_components = umap.rank)
+}
+
+
 train.DF <- cbind(Ycomb,umap_DF)[which(Ycomb !=0), ] %>% as.data.frame()
 test.DF <- cbind(Ycomb,umap_DF)[which(Ycomb ==0), ] %>% as.data.frame()
-set.seed(1)
+set.seed(knn.seed)
 knn <- kknn(Ycomb ~.,
                    train = train.DF,
                    test = test.DF,

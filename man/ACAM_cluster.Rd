@@ -4,12 +4,14 @@
 \alias{ACAM_cluster}
 \title{ACAM_cluster}
 \usage{
-ACAM_cluster(DF, threshold = 4000, SEED = 123)
+ACAM_cluster(DF, threshold = 4000, diverse = TRUE, SEED = 123)
 }
 \arguments{
 \item{DF}{The input dataset. Make sure that the dataset is lognormalized. Note that the rows are cells, and the columns are marker genes.}
 
 \item{threshold}{The threshold that any dataset with the sample size larger than this threshold should be used an accelerated clustering procedure. Default is 4000.}
+
+\item{diverse}{A boolean parameter that defines whether to take a subset of 4 out of 5 most diverse sets of clustering by the top four variance in pairwise ARI.}
 
 \item{SEED}{The random seed.}
 }

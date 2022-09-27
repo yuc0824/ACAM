@@ -23,5 +23,6 @@ Imports:
    SC3,
    cidr,
    ADPclust,
-   SIMLR
+   SIMLR,
+   Seurat
 RoxygenNote: 7.1.2

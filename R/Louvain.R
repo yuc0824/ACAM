@@ -1,7 +1,7 @@
 #' This is the description of the function Louvain.
 #' @title Louvain
 #'
-#' @description The function Louvain assembles the result of five clustering methods used in the function \it{ACAM_cluster}.
+#' @description The function Louvain assembles the result of five clustering methods used in the function \code{ACAM_cluster}.
 #'
 #' @details You can use this function to calculate x+1,then return the value of x+1.
 #'

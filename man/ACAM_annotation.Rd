@@ -6,28 +6,40 @@
 \usage{
 ACAM_annotation(
   DF,
+  preprocess = FALSE,
   cluster_results,
   gene.markers,
-  min_num = 10,
   k.neighbors = 1,
+  min_num = 10,
+  pca = TRUE,
   pca.rank = 50,
-  umap.rank = 10
+  umap.rank = 10,
+  umap.seed = 1,
+  knn.seed = 1
 )
 }
 \arguments{
 \item{DF}{The input dataset. Make sure that the dataset is lognormalized. Note that the rows are cells, and the columns are marker genes.}
 
+\item{preprocess}{Whether the dataset need to be preprocessed. If true, DF will be lognormalized and zero expressed genes will be removed. Default is TRUE.}
+
 \item{cluster_results}{The clustering results obtained from the function \code{ACAM_cluster}}
 
 \item{gene.markers}{The species- and tissue-specific marker genes obtained from CellMatch database.}
 
+\item{k.neighbors}{The number of neighbors considered in the final step kNN.}
+
 \item{min_num}{The mininum number which any clusters have a larger size than this number will be considered as representative clusters. Default is 10.}
 
-\item{k.neighbors}{The number of neighbors considered in the final step kNN.}
+\item{pca}{Whether PCA should be used in the dimension reduction.}
 
 \item{pca.rank}{The dimension of which the dataset will be reduced into by the method PCA.}
 
 \item{umap.rank}{The dimension of which the dataset will be reduced into by the method umap.}
+
+\item{umap.seed}{The random seed when conducting UMAP.}
+
+\item{knn.seed}{The random seed when conducting kNN.}
 }
 \value{
 The annotation results \code{annotation_results}.

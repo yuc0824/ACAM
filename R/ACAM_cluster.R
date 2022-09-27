@@ -7,6 +7,7 @@
 #'
 #' @param DF The input dataset. Make sure that the dataset is lognormalized. Note that the rows are cells, and the columns are marker genes.
 #' @param threshold The threshold that any dataset with the sample size larger than this threshold should be used an accelerated clustering procedure. Default is 4000.
+#' @param diverse A boolean parameter that defines whether to take a subset of 4 out of 5 most diverse sets of clustering by the top four variance in pairwise ARI.
 #' @param SEED The random seed.
 #' @return The clustering results \code{cluster_results}.
 #' @export
@@ -22,13 +23,15 @@
 
 
 
-ACAM_cluster <- function(DF, threshold = 4000, SEED = 123){
+ACAM_cluster <- function(DF,
+                         threshold = 4000,
+                         diverse = TRUE,
+                         SEED = 123){
   if(nrow(DF) < threshold){
-    clusters <- SAMEclustering::individual_clustering(inputTags = t(DF), mt_filter = TRUE,  mt.cutoff = 0.1,
-                                       percent_dropout = 0, SC3 = TRUE, gene_filter = FALSE, svm_num_cells = 5000, CIDR = TRUE, nPC.cidr = NULL,
-                                       Seurat = TRUE, nGene_filter = FALSE, low.genes = 0, high.genes = 0, nPC.seurat = 10, resolution = 0.7,
-                                       tSNE = TRUE, dimensions = 3, perplexity = 30, tsne_min_cells = 200, tsne_min_perplexity = 10, var_genes = NULL,
-                                       SIMLR = FALSE, diverse = FALSE, SEED = SEED)
+    clusters <- SAMEclustering::individual_clustering(inputTags = t(DF), mt_filter = TRUE,
+                                                      percent_dropout = 10, SC3 = TRUE, CIDR = TRUE, nPC.cidr = NULL, Seurat = TRUE, nGene_filter = FALSE,
+                                                      nPC.seurat = NULL, resolution = 0.7, tSNE = TRUE, dimensions = 2, perplexity = 30, SIMLR = TRUE, diverse = diverse,
+                                                      save.results = FALSE, SEED = 123)
   }else{
     clusters <- self_clustering(inputTags = t(DF), k_fixed = 15, SEED = SEED)
   }
@@ -45,8 +48,7 @@ self_clustering <- function(inputTags, percent_dropout = 10, tsne_min_cells = 20
   #SC3
 
   sc3OUTPUT <- sc3_SELF(inputTags = inputTags,percent_dropout = percent_dropout,k_fixed = k_fixed, SEED = SEED)
-  clusters <- rbind(clusters, matrix(c(sc3OUTPUT),
-                                                   nrow = 1, byrow = TRUE))
+  clusters <- rbind(clusters, matrix(c(sc3OUTPUT),nrow = 1, byrow = TRUE))
   if(max(c(sc3OUTPUT)) > 0){
     cluster_number <- c(cluster_number, max(c(sc3OUTPUT)))
   }
@@ -89,24 +91,25 @@ self_clustering <- function(inputTags, percent_dropout = 10, tsne_min_cells = 20
   clusters <- rbind(clusters, simlrOUTPUT$y$cluster)
   rm(simlrOUTPUT)
 
-  #Final
   message("Starting Selection...")
-  rownames(clusters) <- c("SC3", "CIDR",
-                                 "Seurat", "tSNE+kmeans", "SIMLR")
-  ARI = matrix(0, 5, 5)
-  rownames(ARI) <- c("SC3", "CIDR", "Seurat",
-                     "tSNE+kmeans", "SIMLR")
-  colnames(ARI) <- c("SC3", "CIDR", "Seurat",
-                     "tSNE+kmeans", "SIMLR")
-  for (i in c("SC3", "CIDR", "Seurat",
-              "tSNE+kmeans", "SIMLR")) {
-    for (j in c("SC3", "CIDR", "Seurat",
+  if(diverse == TRUE){
+    rownames(clusters) <- c("SC3", "CIDR",
+                            "Seurat", "tSNE+kmeans", "SIMLR")
+    ARI = matrix(0, 5, 5)
+    rownames(ARI) <- c("SC3", "CIDR", "Seurat",
+                       "tSNE+kmeans", "SIMLR")
+    colnames(ARI) <- c("SC3", "CIDR", "Seurat",
+                       "tSNE+kmeans", "SIMLR")
+    for (i in c("SC3", "CIDR", "Seurat",
                 "tSNE+kmeans", "SIMLR")) {
-      ARI[i, j] <- adjustedRandIndex(unlist(clusters[i,
-      ]), unlist(clusters[j, ]))
+      for (j in c("SC3", "CIDR", "Seurat",
+                  "tSNE+kmeans", "SIMLR")) {
+        ARI[i, j] <- adjustedRandIndex(unlist(clusters[i,
+        ]), unlist(clusters[j, ]))
+      }
+      m1 <- which.min(apply(ARI, 1, var))
+      clusters <- clusters[-m1, ]
   }
-  m1 <- which.min(apply(ARI, 1, var))
-  clusters <- clusters[-m1, ]
   return(clusters)
   }
 }

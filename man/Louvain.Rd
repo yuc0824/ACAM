@@ -13,7 +13,7 @@ Louvain(X)
 The clustering results \code{cluster_results}.
 }
 \description{
-The function Louvain assembles the result of five clustering methods used in the function \it{ACAM_cluster}.
+The function Louvain assembles the result of five clustering methods used in the function \code{ACAM_cluster}.
 }
 \details{
 This is the description of the function Louvain.
