@@ -14,14 +14,6 @@
 
 
 
-# library(SAMEclustering)
-# library(SingleCellExperiment)
-# library(SC3)
-# library(cidr)
-# library(ADPclust)
-# library(SIMLR)
-
-
 
 ACAM_cluster <- function(DF,
                          threshold = 4000,

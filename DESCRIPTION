@@ -24,5 +24,6 @@ Imports:
    cidr,
    ADPclust,
    SIMLR,
-   Seurat
+   Seurat,
+   stats
 RoxygenNote: 7.1.2
