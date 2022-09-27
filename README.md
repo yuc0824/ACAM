@@ -41,7 +41,7 @@ annotation_results <-  ACAM_annotation(DF = DF_chen, cluster_results = cluster_r
 
 
 # Supplementary data
-All the data used in the paper can be found at the repository <https://github.com/yuc0824/ACAMdata>.
+All the data, results and visualizations in the paper can be found at the repository <https://github.com/yuc0824/ACAMdata>.
 
 # Authors
 Yu Chen, Fudan University
