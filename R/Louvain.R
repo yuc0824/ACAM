@@ -40,8 +40,8 @@ Louvain <- function(X){
   total.G <- total.G/4
   total.G[total.G < 1] <- 0
 
-  CM_graph <- graph_from_adjacency_matrix(total.G, mode = 'undirected')
-  CM_cluster <- cluster_louvain(CM_graph, weights = NULL)
+  CM_graph <- igraph::graph_from_adjacency_matrix(total.G, mode = 'undirected')
+  CM_cluster <- igraph::cluster_louvain(CM_graph, weights = NULL)
   Y.result <- CM_cluster$membership
   return(Y.result)
 }
