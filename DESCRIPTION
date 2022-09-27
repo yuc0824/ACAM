@@ -12,6 +12,7 @@ encoding: UTF-8
 LazyData: yes
 Imports:
    magrittr,
+   dplyr,
    Matrix,
    SAMEclustering,
    xgboost,

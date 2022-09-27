@@ -60,7 +60,7 @@ ACAM_annotation <-function(DF,
 
 
 # eXtreme Gradient Boosting (XGBoost)
-importance_names <- colnames(DF) %>% toupper
+importance_names <- toupper(colnames(DF))
 label <- NULL
 Yclass.DF <- NULL
 DFclass <- NULL
@@ -76,7 +76,7 @@ for(i in 1:length(Y_min_in)){
   Yclass.DF[[i]] <- rep(0, length(Ycomb))
   Yclass.DF[[i]][which(Ycomb == Y_min_in[i])] <- 1
 
-  Yclass.DF[[i]] <- Yclass.DF[[i]] %>% as.numeric
+  Yclass.DF[[i]] <- as.numeric(Yclass.DF[[i]])
   partial <- ceiling(length(Ycomb) / length(which(Ycomb == Y_min_in[i])) )
   DFclass <- cbind(Yclass.DF[[i]], DF)
 
@@ -93,7 +93,7 @@ for(i in 1:length(Y_min_in)){
     DFclass <- cbind(DFclass[,1],DFclass[,-1][,which(this_mean > other_mean)])
 
     #xgboost
-    M[[i]] <- xgb.DMatrix(data = DFclass[,-1] %>% as.matrix,label = DFclass[,1])
+    M[[i]] <- xgb.DMatrix(data = as.matrix(DFclass[,-1]),label = DFclass[,1])
     X[[i]] <- xgboost(M[[i]],
                            max.depth = 1,
                            eta = 0.5,
@@ -145,8 +145,8 @@ if(pca == TRUE){
 }
 
 
-train.DF <- cbind(Ycomb,umap_DF)[which(Ycomb !=0), ] %>% as.data.frame()
-test.DF <- cbind(Ycomb,umap_DF)[which(Ycomb ==0), ] %>% as.data.frame()
+train.DF <- as.data.frame(cbind(Ycomb,umap_DF)[which(Ycomb !=0), ])
+test.DF <- as.data.frame(cbind(Ycomb,umap_DF)[which(Ycomb ==0), ])
 set.seed(knn.seed)
 knn <- kknn(Ycomb ~.,
                    train = train.DF,
