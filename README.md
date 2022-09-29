@@ -26,6 +26,7 @@ We put Chen dataset in this package as the example.
 
 Before putting into ACAM, make sure that the dataset are log-normalized.
 ```{r, eval = F}
+library(ACAM)
 data("DF_chen")
 data("GM_chen")
 ```
