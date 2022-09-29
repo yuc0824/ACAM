@@ -6,15 +6,16 @@
 #' @details The function ACAM_annotation annotates cells by the method ACAM.
 #'
 #' @param DF The input dataset. Make sure that the dataset is lognormalized. Note that the rows are cells, and the columns are marker genes.
-#' @param preprocess Whether the dataset need to be preprocessed. If true, DF will be lognormalized and zero expressed genes will be removed. Default is TRUE.
+#' @param preprocess Whether the dataset need to be preprocessed. If true, DF will be lognormalized and zero expressed genes will be removed. Default is FALSE.
 #' @param cluster_results The clustering results obtained from the function \code{ACAM_cluster}
 #' @param gene.markers The species- and tissue-specific marker genes obtained from CellMatch database.
-#' @param k.neighbors The number of neighbors considered in the final step kNN.
 #' @param min_num The mininum number which any clusters have a larger size than this number will be considered as representative clusters. Default is 10.
+#' @param oversample Whether we randomly select the cells until the size of the target group is the same as that of the adversarial group.
 #' @param pca Whether PCA should be used in the dimension reduction.
-#' @param pca.rank The dimension of which the dataset will be reduced into by the method PCA.
+#' @param pca.rank The dimension of which the dataset will be reduced into by the method PCA, if \code{pca == TRUE}.
 #' @param umap.rank The dimension of which the dataset will be reduced into by the method umap.
 #' @param umap.seed The random seed when conducting UMAP.
+#' @param k.neighbors The number of neighbors considered in the final step kNN.
 #' @param knn.seed The random seed when conducting kNN.
 #' @return The annotation results \code{annotation_results}.
 #' @export
@@ -28,12 +29,13 @@ ACAM_annotation <-function(DF,
                            preprocess = FALSE,
                            cluster_results,
                            gene.markers,
-                           k.neighbors = 1,
                            min_num = 10,
-                           pca = TRUE,
+                           oversample = TRUE,
+                           pca = FALSE,
                            pca.rank = 50,
-                           umap.rank = 10,
+                           umap.rank = 2,
                            umap.seed = 1,
+                           k.neighbors = 1,
                            knn.seed = 1
                            )
 {
@@ -77,30 +79,36 @@ for(i in 1:length(Y_min_in)){
   Yclass.DF[[i]][which(Ycomb == Y_min_in[i])] <- 1
 
   Yclass.DF[[i]] <- as.numeric(Yclass.DF[[i]])
-  partial <- ceiling(length(Ycomb) / length(which(Ycomb == Y_min_in[i])) )
+  #partial <- ceiling(length(Ycomb) / length(which(Ycomb == Y_min_in[i])) )
   DFclass <- cbind(Yclass.DF[[i]], DF)
-
-  #magnify
-  if(partial > 2){
-    for(k in 1:(partial- 2)){
-      DFclass <- rbind(DFclass, DFclass[which(Ycomb == Y_min_in[i]),])
-    }
+ 
+#   #magnify
+#   if(partial > 2){
+#     for(k in 1:(partial- 2)){
+#       DFclass <- rbind(DFclass, DFclass[which(Ycomb == Y_min_in[i]),])
+#     }
+#   }
+  
+  # oversample
+  if(oversample == TRUE){
+    sample_index <- sample(which(Ycomb == Y_min_in[i]), size = (length(Ycomb) - length(which(Ycomb == Y_min_in[i]))), replace = T)
+    DFclass <- rbind(DFclass, DFclass[sample_index, ])
   }
-
+  
   this_mean <- apply(DF[which(Ycomb == Y_min_in[i]), ],2,mean)
   other_mean <- apply(DF[which(Ycomb != Y_min_in[i]),],2,mean)
   if(length(which(this_mean > other_mean)) > 0){
     DFclass <- cbind(DFclass[,1],DFclass[,-1][,which(this_mean > other_mean)])
 
     #xgboost
-    M[[i]] <- xgb.DMatrix(data = as.matrix(DFclass[,-1]),label = DFclass[,1])
-    X[[i]] <- xgboost(M[[i]],
+    M[[i]] <- xgboost::xgb.DMatrix(data = as.matrix(DFclass[,-1]),label = DFclass[,1])
+    X[[i]] <- xgboost::xgboost(M[[i]],
                            max.depth = 1,
                            eta = 0.5,
                            nround = 50,
                            objective = 'binary:hinge',
                            eval_metric = "auc")
-    IM[[i]] <- xgb.importance(importance_names[which(this_mean > other_mean)], model = X[[i]])
+    IM[[i]] <- xgboost::xgb.importance(importance_names[which(this_mean > other_mean)], model = X[[i]])
     IM[[i]][,2] <- as.vector(IM[[i]][,2])
 
     info[[i]] <- 0
@@ -141,14 +149,14 @@ if(pca == TRUE){
   umap_DF <- uwot::umap(DFpca, n_components = umap.rank)
 }else{
   set.seed(umap.seed)
-  umap_DF <- uwot::umap(DFpca, n_components = umap.rank)
+  umap_DF <- uwot::umap(DF, n_components = umap.rank)
 }
 
 
 train.DF <- as.data.frame(cbind(Ycomb,umap_DF)[which(Ycomb !=0), ])
 test.DF <- as.data.frame(cbind(Ycomb,umap_DF)[which(Ycomb ==0), ])
 set.seed(knn.seed)
-knn <- kknn(Ycomb ~.,
+knn <- kknn::kknn(Ycomb ~.,
                    train = train.DF,
                    test = test.DF,
                    k = k.neighbors,
